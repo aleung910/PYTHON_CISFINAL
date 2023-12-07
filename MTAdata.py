@@ -5,8 +5,13 @@ import pprint
 
 url = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct/gtfs-bdfm"
 API_KEY = 'Sk9HMgyQuN24slsbgXEEs2avCkx5pbxr68SxonnD'
-ROUTE = "D"
-feed = SubwayFeed.get(ROUTE, api_key=API_KEY) 
+
+ROUTES = ["1","2","3","4","5","6"]
+
+for route in ROUTES[::]:
+  feed = SubwayFeed.get(route, api_key=API_KEY)
+  for train, val in feed.extract_stop_dict().items():
+    pass
 
 with open('stopsID.json', 'r') as f:
   stopsID = json.load(f)
@@ -39,22 +44,23 @@ def build_graph():
   return graph
 
 def graph_weight(graph):
-  for key, line in enumerate(lines):
-    arr = line[str(key)][0]
+  stopTimes = {}
+  for route in ROUTES[:6:]:
+    feed = SubwayFeed.get(route, api_key=API_KEY)
+    print(len(stopTimes))
+    for train, val in feed.extract_stop_dict().items(): 
+      for x, y in val.items(): 
+        if x in stopsID:    # Checks if x=(station ID API gives) is in the JSON
+          stopTimes[stopsID[x]] = y[0] # Makes the stop the key, and the list of times the value
+                                    # ex. "{175th st: [time1, time2, time3 ...] }"  
+  pprint.pprint(stopTimes) 
+   
+  for key, stops in graph.items():
+    for stop, weight in stops.items():
+      if stop in stopTimes:
+        stops[stop] = stopTimes[stop]
 
-    for index in range(len(arr)):
-
-      for ind, val in feed.extract_stop_dict().items():
-        print(ind) # Train
-
-        for x, y in val.items(): 
-          print(arr) # Gets the ID of stop
-
-          if x in stopsID:
-            if stopsID[x] in arr:
-              graph[arr[key][stopsID[x]]] = y[0]
-
-  pprint.pprint(graph)
+  return graph
 
 def check_MTA_data():
   for key, val in feed.extract_stop_dict().items():
@@ -118,9 +124,9 @@ def subtract_datetime(first, second):
 # Have to implement a way to check transfers
 
 # with open("graph.json", "w") as outfile: 
-#     json.dump(build_graph(), outfile)
+#     json.dump(build_graph(), outfile)*ru
 # check_MTA_data()
-# pprint.pprint(build_graph())
+pprint.pprint(build_graph())
 
 #test for A train
 # print(amount_of_time("Inwood-207 St","145 St"))
@@ -145,4 +151,4 @@ def subtract_datetime(first, second):
 # # 168 St-Washington Hts
 
 #CTRAIN TEST
-print(amount_of_time("Fordham Rd","Coney Island-Stillwell Av")) #numbers work for B
+# print(amount_of_time("Fordham Rd","Coney Island-Stillwell Av")) #numbers work for B
