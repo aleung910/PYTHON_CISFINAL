@@ -1,5 +1,6 @@
 import MTAdata
-graph = {'a':{'b':10,'c':3},'b':{'c':1,'d':2},'c':{'b':4,'d':8,'e':2},'d':{'e':7},'e':{'d':9}}
+
+stopGraph = MTAdata.graph_weight(MTAdata.build_graph())
  
 def dijkstra(graph,start,goal):
     shortest_distance = {}
@@ -15,11 +16,19 @@ def dijkstra(graph,start,goal):
         minNode = None
         for node in unseenNodes:
             if minNode is None:
-                minNode = node
+                if node[:2] == "N " or node[:2] == "S ":
+                    minNode = node[2:]
+                else:
+                    minNode = node
             elif shortest_distance[node] < shortest_distance[minNode]:
-                minNode = node
+                if node[:2] == "N " or node[:2] == "S ":
+                    minNode = node[2:]
+                else:
+                    minNode = node
  
         for childNode, weight in graph[minNode].items():
+            if childNode[:2] == "N " or childNode[:2] == "S ":
+                childNode = childNode[2:]
             if weight + shortest_distance[minNode] < shortest_distance[childNode]:
                 shortest_distance[childNode] = weight + shortest_distance[minNode]
                 predecessor[childNode] = minNode
@@ -35,8 +44,8 @@ def dijkstra(graph,start,goal):
             break
     path.insert(0,start)
     if shortest_distance[goal] != infinity:
-        print('Shortest distance is ' + str(shortest_distance[goal]))
-        print('And the path is ' + str(path))
+        print(f'Shortest distance is {shortest_distance[goal] // 60} minutes')
+        print(f'And the path is {path}')
  
  
-dijkstra(graph, 'a', 'b')
+dijkstra(stopGraph, 'Van Cortlandt Park-242 St', '14 St-Union Sq')

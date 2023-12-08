@@ -1,0 +1,56 @@
+/* Box Model Hack */
+* {
+    box-sizing: border-box;
+}
+
+/* Clear fix hack */
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.clear {
+   clear: both;
+}
+
+/******************************************
+/* LAYOUT
+/*******************************************/
+.MTAIMG{
+    width: 100px;
+    text-align: center;
+
+}
+h1{
+    float:left;
+}
+.mid{
+    align-items: center;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50VH;
+    margin: 0;
+}
+
+main {
+    text-align: center;
+}
+
+.mid {
+    margin: auto; /* This will center the .mid section horizontally */
+    max-width: 600px; /* Adjust the max-width as needed */
+}
+
+select {
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+/* Add any additional styles as needed */
